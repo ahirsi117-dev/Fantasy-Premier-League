@@ -1,0 +1,11 @@
+{
+  "name": "pl-next-gameweek",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "still": "remotion still",
+    "typecheck": "tsc -p ."
+  }
+}
