@@ -56,12 +56,12 @@ const Shot: React.FC<{src: string; len: number; pos?: string; zoom?: [number, nu
 // player portrait framed on the face, full frame
 type P = {src: string; iw: number; ih: number; fx: number; fy: number; cw: number; name: string};
 const PL: Record<string, P> = {
-	yamal: {src: 'yamal.jpg', iw: 2228, ih: 3403, fx: 0.625, fy: 0.16, cw: 0.22, name: 'LAMINE YAMAL'},
-	pedri: {src: 'pedri.jpg', iw: 3333, ih: 5000, fx: 0.47, fy: 0.27, cw: 0.42, name: 'PEDRI'},
-	raphinha: {src: 'raphinha.jpg', iw: 3333, ih: 5000, fx: 0.54, fy: 0.25, cw: 0.32, name: 'RAPHINHA'},
-	mbappe: {src: 'mbappe.jpeg', iw: 543, ih: 883, fx: 0.68, fy: 0.15, cw: 0.26, name: 'KYLIAN MBAPPÉ'},
-	bellingham: {src: 'bellingham.jpg', iw: 1280, ih: 2530, fx: 0.5, fy: 0.11, cw: 0.28, name: 'JUDE BELLINGHAM'},
-	valverde: {src: 'valverde.jpg', iw: 960, ih: 540, fx: 0.6, fy: 0.27, cw: 0.3, name: 'FEDE VALVERDE'},
+	yamal: {src: 'yamal.jpg', iw: 2228, ih: 3403, fx: 0.62, fy: 0.195, cw: 0.2, name: 'LAMINE YAMAL'},
+	pedri: {src: 'pedri.jpg', iw: 3333, ih: 5000, fx: 0.47, fy: 0.27, cw: 0.3, name: 'PEDRI'},
+	raphinha: {src: 'raphinha.jpg', iw: 3333, ih: 5000, fx: 0.54, fy: 0.25, cw: 0.24, name: 'RAPHINHA'},
+	mbappe: {src: 'mbappe.jpeg', iw: 543, ih: 883, fx: 0.55, fy: 0.135, cw: 0.22, name: 'KYLIAN MBAPPÉ'},
+	bellingham: {src: 'bellingham.jpg', iw: 1280, ih: 2530, fx: 0.5, fy: 0.11, cw: 0.22, name: 'JUDE BELLINGHAM'},
+	valverde: {src: 'valverde.jpg', iw: 960, ih: 540, fx: 0.6, fy: 0.27, cw: 0.24, name: 'FEDE VALVERDE'},
 };
 const Face: React.FC<{p: P; len: number}> = ({p, len}) => {
 	const f = useCurrentFrame();
@@ -72,6 +72,7 @@ const Face: React.FC<{p: P; len: number}> = ({p, len}) => {
 		<AbsoluteFill style={{overflow: 'hidden', background: '#000'}}>
 			<Img src={staticFile(`clasico/players/${p.src}`)} style={{position: 'absolute', left: 540 - p.fx * Wd, top: 1920 * 0.4 - p.fy * Hd, width: Wd, height: Hd, filter: 'contrast(1.2) saturate(0.7) brightness(0.9)'}} />
 			<Grade warm={0.45} />
+			<AbsoluteFill style={{background: 'linear-gradient(180deg, transparent 52%, rgba(0,0,0,0.92) 70%, #000 85%)'}} />
 		</AbsoluteFill>
 	);
 };
@@ -166,12 +167,12 @@ function Quick() {
 function Finale() {
 	const f = useCurrentFrame();
 	const len = L(25, 32);
-	const push = interpolate(f, [0, len], [1.05, 1.9], {...clamp, easing: IN_OUT});
+	const push = interpolate(f, [0, len], [1.9, 2.8], {...clamp, easing: IN_OUT});
 	const light = tween(f, 200, 160, 0, 1, IN_OUT); // walk into the light at the end of the tunnel
 	return (
 		<AbsoluteFill>
 			<AbsoluteFill style={{overflow: 'hidden', background: '#000'}}>
-				<Img src={staticFile('clasico/bg/tunnel.jpg')} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 50%', transform: `scale(${push})`, filter: 'contrast(1.2) saturate(0.7) brightness(0.8)'}} />
+				<Img src={staticFile('clasico/bg/tunnel.jpg')} style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: '50% 50%', transformOrigin: '50% 74%', transform: `scale(${push})`, filter: 'contrast(1.2) saturate(0.7) brightness(0.8)'}} />
 				<Grade warm={0.55} />
 			</AbsoluteFill>
 			<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 48%, rgba(255,246,225,0.95), rgba(255,246,225,0) 60%)', opacity: light}} />

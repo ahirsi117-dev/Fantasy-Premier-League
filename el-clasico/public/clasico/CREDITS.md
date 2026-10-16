@@ -16,3 +16,16 @@
 - Fonts: Anton, IBM Plex Mono, Inter, Cairo (Google Fonts, OFL)
 - SFX: synthesized (scripts/sfx.mjs)
 - Fixture: Sun 25 Oct 2026, 21:00 CET, Spotify Camp Nou (realmadrid.com, ESPN)
+
+## Cinematic cut (el-clasico-cinematic.mp4)
+- Music: "SOUND_DRAMATIC" — supplied by the user
+- Background photos (Wikimedia Commons, 1280px thumbnails, colour-graded):
+  - "Storm-over-barcelona-skyline.jpg" — Matiascaniete, CC BY-SA 4.0
+  - "Barcelona night stars NachoMG.jpg" — Nacho MG, CC BY-SA 4.0
+  - "Camp Nou aerial (cropped).jpg" — Oh-Barcelona.com, CC BY 2.0
+  - "2014. Camp Nou. Més que un club. Barcelona B40.jpg" — Luis Miguel Bugallo Sánchez, CC BY-SA 3.0
+  - "LFP - Barcelona vs Mallorca pre-match - Oct 3rd 2010.jpg" — Paolo Costa Baldi, CC BY-SA 3.0
+  - "Estadio Santiago Bernabeu (53988716884).jpg" — Daniel from Glasgow, CC BY 2.0
+  - "Gran Via, Madrid, at night II.jpg" — Leonardo Angelini, CC BY 2.0
+  - "Players' tunnel at Tottenham Hotspur Stadium, view towards pitch.jpg" — Hzh, CC BY-SA 4.0 (cropped)
+- Fonts: Orbitron, Michroma (Google Fonts, OFL)
