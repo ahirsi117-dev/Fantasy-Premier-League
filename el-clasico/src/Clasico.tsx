@@ -1,31 +1,32 @@
-// EL CLÁSICO — THE WORLD STOPS · 60 s · 9:16 · rendered at 4K (scale 2)
+// EL CLÁSICO — THE WORLD STOPS · 32 s · 9:16 · 1080×1920 @ 60 fps
 // Script: the user's 7-part trailer. Motion language from "Look 00" (whatships.com/videos/look-00):
 // HUD brackets, mono labels that decode, tag cards with barcodes, red index numbers,
-// condensed heavy type, tracking boxes, grain. Music: "Another Side" (Bensound).
-// VO: the user's file, cut into its 13 phrases and placed on the timeline below.
+// condensed heavy type, tracking boxes, grain. Music: "Achilles" (Kevin MacLeod, CC BY 4.0) — its kick at 0:27 lands on the title.
+// VO: the user's file, cut into its 13 phrases, running from the first second.
 import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {C, EXPO, IN_OUT, WHIP, display, inter, mono, pop, rand, tween} from './kit/theme';
 
-export const CLASICO_TOTAL = 3600;
+export const CLASICO_TOTAL = 1920; // 32 s
 const s = (sec: number) => Math.round(sec * 60);
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
 // ---------------------------------------------------------------- VO placement (file phrase → video second)
-const VO: {from: number; to: number; at: number; text: string}[] = [
-	{from: 0.15, to: 0.95, at: 32.0, text: 'FOR SOME,'},
-	{from: 1.3, to: 1.98, at: 33.0, text: "IT'S A GAME."},
-	{from: 2.82, to: 3.5, at: 35.0, text: 'FOR THEM…'},
-	{from: 4.11, to: 5.2, at: 36.0, text: "IT'S EVERYTHING."},
-	{from: 6.23, to: 7.18, at: 38.4, text: 'TWO GIANTS.'},
-	{from: 7.5, to: 8.58, at: 39.6, text: 'TWO LEGACIES.'},
-	{from: 9.07, to: 10.5, at: 41.0, text: 'ONE BATTLEFIELD.'},
-	{from: 11.24, to: 12.2, at: 44.0, text: 'BARCELONA.'},
-	{from: 12.5, to: 13.5, at: 45.6, text: 'REAL MADRID.'},
-	{from: 14.36, to: 15.46, at: 47.6, text: 'NINETY MINUTES.'},
-	{from: 15.91, to: 17.16, at: 49.0, text: 'ETERNAL PRIDE.'},
-	{from: 17.72, to: 19.8, at: 51.2, text: 'THIS IS NOT JUST FOOTBALL.'},
-	{from: 20.18, to: 22.2, at: 54.6, text: 'THIS IS EL CLÁSICO.'},
+// The voice runs from the first second; `cap` = also show the line as a caption (off where the scene already spells it)
+const VO: {from: number; to: number; at: number; text: string; cap: boolean}[] = [
+	{from: 0.15, to: 0.95, at: 0.4, text: 'FOR SOME,', cap: true},
+	{from: 1.3, to: 1.98, at: 1.4, text: "IT'S A GAME.", cap: true},
+	{from: 2.82, to: 3.5, at: 2.8, text: 'FOR THEM…', cap: true},
+	{from: 4.11, to: 5.2, at: 3.9, text: "IT'S EVERYTHING.", cap: true},
+	{from: 6.23, to: 7.18, at: 5.6, text: 'TWO GIANTS.', cap: true},
+	{from: 7.5, to: 8.58, at: 6.9, text: 'TWO LEGACIES.', cap: true},
+	{from: 9.07, to: 10.5, at: 8.3, text: 'ONE BATTLEFIELD.', cap: true},
+	{from: 11.24, to: 12.2, at: 10.4, text: 'BARCELONA.', cap: false},
+	{from: 12.5, to: 13.5, at: 15.3, text: 'REAL MADRID.', cap: false},
+	{from: 14.36, to: 15.46, at: 20.4, text: 'NINETY MINUTES.', cap: false},
+	{from: 15.91, to: 17.16, at: 21.9, text: 'ETERNAL PRIDE.', cap: false},
+	{from: 17.72, to: 19.8, at: 23.2, text: 'THIS IS NOT JUST FOOTBALL.', cap: false},
+	{from: 20.18, to: 22.2, at: 25.05, text: 'THIS IS EL CLÁSICO.', cap: false},
 ];
 
 // ---------------------------------------------------------------- players (face centre as fraction of the image, crop width fraction)
@@ -137,12 +138,12 @@ const Grain: React.FC = () => {
 
 const HUD: React.FC = () => {
 	const f = useCurrentFrame();
-	const on = tween(f, 40, 40);
+	const on = tween(f, 0, 20);
 	const sec = Math.floor(f / 60);
 	const fr = f % 60;
 	const tc = `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}:${String(fr).padStart(2, '0')}`;
 	const ticker = '  FC BARCELONA  ·  REAL MADRID  ·  LALIGA MATCHDAY 10  ·  SUN 25.10.2026  ·  21:00 CET  ·  SPOTIFY CAMP NOU  ·  BARCELONA  ·';
-	const fadeEnd = 1 - tween(f, 3480, 90, 0, 1, IN_OUT);
+	const fadeEnd = 1 - tween(f, 1830, 80, 0, 1, IN_OUT);
 	return (
 		<AbsoluteFill style={{opacity: on * fadeEnd, pointerEvents: 'none'}}>
 			<Full>
@@ -231,127 +232,6 @@ const Stadium: React.FC<{lights: number; z: number; ty: number; pitch?: number}>
 	);
 };
 
-// ---------------------------------------------------------------- S1 · 0–6 s · before the storm
-const S1: React.FC = () => {
-	const f = useCurrentFrame();
-	const lights = tween(f, 90, 210, 0, 1, (x) => x);
-	const z = interpolate(f, [30, 360], [0.55, 1.25], {...clamp, easing: IN_OUT});
-	const ty = interpolate(f, [30, 360], [-260, 120], {...clamp, easing: IN_OUT});
-	const on = tween(f, 30, 60);
-	return (
-		<AbsoluteFill style={{opacity: on}}>
-			<Stadium lights={lights} z={z} ty={ty} />
-			<Fog o={0.8 + 0.2 * lights} />
-			<div style={{position: 'absolute', top: 520, width: '100%', textAlign: 'center'}}>
-				<Scramble text="ONE CITY. TWO GIANTS." at={200} dur={50} size={46} />
-			</div>
-			<div style={{position: 'absolute', top: 590, width: '100%', textAlign: 'center', opacity: tween(f, 240, 30)}}>
-				<Mono size={16} color={C.muted}>41.3809° N · 2.1228° E · SPOTIFY CAMP NOU</Mono>
-			</div>
-		</AbsoluteFill>
-	);
-};
-
-// ---------------------------------------------------------------- S2 · 6–13 s · the war begins
-const Grass: React.FC<{f: number}> = ({f}) => (
-	<Full>
-		{Array.from({length: 220}).map((_, i) => {
-			const x = rand(i, 1) * 1080;
-			const h = 320 + rand(i, 2) * 520;
-			const sway = Math.sin(f / 40 + i) * 10;
-			return <path key={i} d={`M${x} 1920 Q${x + sway} ${1920 - h / 2} ${x + sway * 2} ${1920 - h}`} stroke={`rgba(${60 + rand(i, 3) * 40},${130 + rand(i, 4) * 60},${70 + rand(i, 5) * 30},0.9)`} strokeWidth={3 + rand(i, 6) * 5} fill="none" />;
-		})}
-	</Full>
-);
-
-const Droplets: React.FC<{f: number; at: number}> = ({f, at}) => {
-	const t = Math.max(0, f - at) * 0.35; // slow motion
-	if (f < at) return null;
-	return (
-		<Full>
-			{Array.from({length: 40}).map((_, i) => {
-				const vx = (rand(i, 11) - 0.5) * 14;
-				const vy = -6 - rand(i, 12) * 12;
-				const x = 540 + vx * t;
-				const y = 1560 + vy * t + 0.18 * t * t;
-				const r = 6 + rand(i, 13) * 14;
-				return <circle key={i} cx={x} cy={y} r={r} fill="rgba(220,235,255,0.85)" opacity={Math.max(0, 1 - t / 90)} />;
-			})}
-		</Full>
-	);
-};
-
-const Tunnel: React.FC<{p: number; f: number}> = ({p, f}) => (
-	<AbsoluteFill>
-		<Full>
-			{Array.from({length: 9}).map((_, i) => {
-				const k = ((i + p * 3) % 9) / 9;
-				const sc = 0.12 + k * k * 1.5;
-				const w = 1080 * sc;
-				const h = 1500 * sc;
-				return <rect key={i} x={540 - w / 2} y={980 - h / 2} width={w} height={h} fill="none" stroke={`rgba(244,242,238,${0.08 + k * 0.3})`} strokeWidth={2} />;
-			})}
-			{/* light strips on the ceiling */}
-			{[0, 1, 2, 3, 4].map((i) => {
-				const k = ((i + p * 2.2) % 5) / 5;
-				const sc = 0.15 + k * k * 1.4;
-				return <rect key={i} x={540 - 120 * sc} y={980 - 750 * sc} width={240 * sc} height={8 + 14 * sc} fill={`rgba(255,250,235,${0.2 + k * 0.6})`} />;
-			})}
-		</Full>
-		<div style={{position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 52%, rgba(255,255,255,0.10), rgba(0,0,0,0.9) 70%)'}} />
-		{/* anonymous player silhouette walking away */}
-		<svg width={1080} height={1920} style={{position: 'absolute', inset: 0}}>
-			<g transform={`translate(540 ${1180 + Math.sin(f / 9) * 6}) scale(${1.2 - p * 0.3})`}>
-				<circle cx={0} cy={-330} r={44} fill="#000" />
-				<path d="M-70 -280 Q0 -300 70 -280 L95 -60 L60 -50 L50 0 L-50 0 L-60 -50 L-95 -60 Z" fill="#000" />
-				<path d={`M-45 0 L${-40 + Math.sin(f / 9) * 20} 260 L${-5 + Math.sin(f / 9) * 20} 260 L0 20 L5 260 L${40 - Math.sin(f / 9) * 20} 260 L45 0 Z`} fill="#000" />
-			</g>
-		</svg>
-	</AbsoluteFill>
-);
-
-const S2: React.FC = () => {
-	const f = useCurrentFrame(); // local 0 = 6.0 s
-	// 0–150: macro turf + droplets · 150–420: tunnel
-	const tunnel = f >= 150;
-	const crestFlash = (at: number, src: string) => (f >= at && f < at + 7 ? <Img src={staticFile(`clasico/crest/${src}`)} style={{position: 'absolute', left: 140, top: 560, width: 800, height: 800, objectFit: 'contain', clipPath: 'inset(20% 0 35% 0)', filter: 'brightness(1.4)', opacity: 0.9}} /> : null);
-	return (
-		<AbsoluteFill>
-			{!tunnel ? (
-				<AbsoluteFill style={{transform: `scale(${interpolate(f, [0, 150], [1.15, 1.25])})`}}>
-					<AbsoluteFill style={{background: 'linear-gradient(180deg, #000 0%, #04110a 55%, #0b2a14 100%)'}} />
-					<Grass f={f} />
-					<Droplets f={f} at={20} />
-					<div style={{position: 'absolute', left: 0, right: 0, top: 1380, height: 300, background: 'radial-gradient(ellipse at 50% 70%, rgba(255,255,255,0.18), transparent 60%)'}} />
-					<div style={{position: 'absolute', left: 0, right: 0, top: 1300, height: 500, background: 'radial-gradient(ellipse at 50% 60%, rgba(200,230,255,0.10), transparent 60%)'}} />
-					<div style={{position: 'absolute', top: 1160, width: '100%', textAlign: 'center', opacity: tween(f, 30, 30)}}>
-						<Mono size={16} color={C.muted}>TURF · 8°C · RAIN 92%</Mono>
-					</div>
-				</AbsoluteFill>
-			) : (
-				<Tunnel p={tween(f, 150, 270, 0, 1, (x) => x)} f={f} />
-			)}
-			{tunnel ? (
-				<Full>
-					<Brackets x={380} y={780} w={320} h={720} p={tween(f, 180, 20)} color={C.red} len={28} />
-				</Full>
-			) : null}
-			{tunnel ? (
-				<div style={{position: 'absolute', left: 380, top: 744, opacity: tween(f, 190, 15)}}>
-					<Mono size={16} color={C.red}>SUBJECT // UNKNOWN · 0.97</Mono>
-				</div>
-			) : null}
-			{crestFlash(300, 'fcb.svg')}
-			{crestFlash(330, 'rma.svg')}
-			<div style={{position: 'absolute', top: 300, width: '100%', textAlign: 'center'}}>
-				{f >= 230 && f < 330 ? <Big size={170}>NO FEAR.</Big> : null}
-				{f >= 345 ? <Big size={170} color={C.red}>NO MERCY.</Big> : null}
-			</div>
-		</AbsoluteFill>
-	);
-};
-
-// ---------------------------------------------------------------- S3 · 13–22 s · Barça: art & rebellion
 const Stripes: React.FC<{f: number; o: number}> = ({f, o}) => (
 	<AbsoluteFill style={{opacity: o}}>
 		<AbsoluteFill style={{background: `repeating-linear-gradient(90deg, ${C.fcbBlue} 0 120px, ${C.fcbGarnet} 120px 240px)`, transform: `translateX(${-(f * 0.6) % 240}px)`, filter: 'brightness(0.35) saturate(1.2)', width: 1400}} />
@@ -401,36 +281,7 @@ const KitCard: React.FC<{src: string; at: number; title: string; rows: [string, 
 	);
 };
 
-const S3: React.FC = () => {
-	const f = useCurrentFrame(); // local 0 = 13.0 s
-	const bar = tween(f, 450, 50, 0, 1, (x) => x);
-	return (
-		<AbsoluteFill>
-			<Stripes f={f} o={tween(f, 0, 20)} />
-			<PlayerBeat p={PL.yamal} at={0} dur={130} tint={[C.fcbBlue, '#0a0a1a']} idx="01" club="FC BARCELONA" freeze={95} />
-			<PlayerBeat p={PL.pedri} at={130} dur={120} tint={[C.fcbGarnet, '#120208']} idx="02" club="FC BARCELONA" />
-			<PlayerBeat p={PL.raphinha} at={250} dur={110} tint={[C.fcbBlue, C.fcbGarnet]} idx="03" club="FC BARCELONA" freeze={320} />
-			{f >= 360 ? <KitCard src="fcb-golf.jpg" at={360} title="BARÇA × GOLF WANG" rows={[['SEASON', '26/27'], ['EDITION', 'LIMITED · 1,899'], ['CHEST', 'GOLF']]} accent={C.fcbGarnet} bg="#0b1220" /> : null}
-			<div style={{position: 'absolute', top: 170, width: '100%', textAlign: 'center', opacity: tween(f, 400, 20)}}>
-				{f >= 400 ? <Big size={130} color={C.fcbGold}>MÉS QUE UN CLUB.</Big> : null}
-			</div>
-			{f >= 440 ? (
-				<div style={{position: 'absolute', left: 140, right: 140, top: 1360, height: 6, background: 'rgba(244,242,238,0.2)'}}>
-					<div style={{width: `${bar * 100}%`, height: '100%', background: C.red}} />
-				</div>
-			) : null}
-			{/* the ball flies at the lens and whites out */}
-			{f >= 500 ? (
-				<AbsoluteFill>
-					<div style={{position: 'absolute', left: 540, top: 960, width: 10, height: 10, borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #fff, #bbb 60%, #555)', transform: `translate(-50%,-50%) scale(${interpolate(f, [500, 540], [2, 400], {...clamp, easing: (x) => x * x * x})})`}} />
-					<AbsoluteFill style={{background: '#fff', opacity: tween(f, 528, 12, 0, 1, (x) => x)}} />
-				</AbsoluteFill>
-			) : null}
-		</AbsoluteFill>
-	);
-};
 
-// ---------------------------------------------------------------- S4 · 22–31 s · Madrid: kings' mentality
 const GoldStreaks: React.FC<{f: number; o: number}> = ({f, o}) => (
 	<Full style={{opacity: o}}>
 		{Array.from({length: 22}).map((_, i) => {
@@ -443,108 +294,10 @@ const GoldStreaks: React.FC<{f: number; o: number}> = ({f, o}) => (
 	</Full>
 );
 
-const S4: React.FC = () => {
-	const f = useCurrentFrame(); // local 0 = 22.0 s
-	const whiteIn = 1 - tween(f, 0, 30, 0, 1, IN_OUT);
-	const sideLight = tween(f, 20, 120, 0, 1, IN_OUT);
-	const tintRM: [string, string] = ['#E9E2CF', '#141006'];
-	return (
-		<AbsoluteFill>
-			<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 35%, #1a160c, #030304 70%)'}} />
-			<GoldStreaks f={f} o={tween(f, 150, 40)} />
-			{f < 170 ? (
-				<AbsoluteFill>
-					<Portrait p={PL.mbappe} x={90} y={300} w={900} h={1240} from={0} tint={tintRM} zoom={[1.0, 1.1]} side={sideLight} />
-					<Full>
-						<Brackets x={90} y={300} w={900} h={1240} p={tween(f, 60, 20)} color="rgba(212,175,55,0.8)" />
-					</Full>
-					<div style={{position: 'absolute', left: 110, top: 1420}}>
-						<span style={{background: C.rmaGold, color: '#000', fontFamily: mono, fontSize: 22, padding: '2px 10px', marginRight: 14}}>04</span>
-						<Scramble text={PL.mbappe.name} at={70} dur={24} size={30} />
-					</div>
-					<div style={{position: 'absolute', left: 110, top: 1470, opacity: tween(f, 80, 20)}}>
-						<Mono size={16} color={C.muted}>REAL MADRID · ST · PHOTO SdHb</Mono>
-					</div>
-				</AbsoluteFill>
-			) : null}
-			<PlayerBeat p={PL.bellingham} at={170} dur={110} tint={tintRM} idx="05" club="REAL MADRID" />
-			<PlayerBeat p={PL.valverde} at={280} dur={90} tint={tintRM} idx="06" club="REAL MADRID" freeze={340} />
-			{f >= 370 ? <KitCard src="rma-home.jpg" at={370} title="REAL MADRID HOME" rows={[['SEASON', '26/27'], ['COLLAR', 'DARK GREEN'], ['STRIPES', 'PINK']]} accent={C.rmaGold} bg="#ECEAE4" /> : null}
-			<div style={{position: 'absolute', top: 170, width: '100%', textAlign: 'center'}}>
-				{f >= 420 ? <Big size={118} color={C.rmaGold}>HISTORY DOESN'T BOW.</Big> : null}
-			</div>
-			<AbsoluteFill style={{background: '#fff', opacity: whiteIn}} />
-		</AbsoluteFill>
-	);
-};
 
-// ---------------------------------------------------------------- S5 · 31–43 s · the face-off (VO)
 const Crest: React.FC<{src: string; size: number; style?: React.CSSProperties}> = ({src, size, style}) => <Img src={staticFile(`clasico/crest/${src}`)} style={{width: size, height: size, objectFit: 'contain', ...style}} />;
 
-const VOCaption: React.FC<{base: number}> = ({base}) => {
-	const f = useCurrentFrame() + base; // global frame
-	const cur = VO.filter((v) => f >= s(v.at) && f < s(v.at) + s(v.to - v.from) + 40);
-	return (
-		<>
-			{cur.map((v, i) => {
-				const a = s(v.at);
-				const p = tween(f, a, 18);
-				const out = tween(f, a + s(v.to - v.from) + 18, 22, 0, 1, IN_OUT);
-				return (
-					<div key={i} style={{position: 'absolute', left: 60, right: 60, top: 1580, textAlign: 'center', opacity: p * (1 - out), transform: `translateY(${(1 - p) * 20}px)`}}>
-						<Scramble text={v.text} at={a - base} dur={14} size={54} />
-					</div>
-				);
-			})}
-		</>
-	);
-};
 
-const S5: React.FC = () => {
-	const f = useCurrentFrame(); // local 0 = 31.0 s
-	const black = f < 50; // the sudden silence
-	const split = tween(f, 50, 50, 0, 1, WHIP);
-	const orbit = interpolate(f, [60, 420], [0, 1], clamp);
-	const wide = tween(f, 430, 60, 0, 1, IN_OUT); // 38.2 s: two giants → wide stadium
-	return (
-		<AbsoluteFill>
-			{black ? null : (
-				<AbsoluteFill style={{opacity: 1 - wide}}>
-					{/* left: Barça light · right: Madrid light */}
-					<div style={{position: 'absolute', left: 0, top: 0, width: 540, height: 1920, transform: `translateX(${-(1 - split) * 540}px)`, background: `linear-gradient(180deg, ${C.fcbBlue}66, ${C.fcbGarnet}88)`}} />
-					<div style={{position: 'absolute', left: 540, top: 0, width: 540, height: 1920, transform: `translateX(${(1 - split) * 540}px)`, background: 'linear-gradient(180deg, rgba(247,245,240,0.25), rgba(212,175,55,0.3))'}} />
-					<div style={{position: 'absolute', left: 538, top: 0, width: 4, height: 1920 * split, background: C.ink}} />
-					<Crest src="fcb.svg" size={360} style={{position: 'absolute', left: 90 + Math.sin(orbit * Math.PI) * 20, top: 760, transform: `scale(${0.9 + orbit * 0.1}) rotateY(${(1 - orbit) * 30}deg)`, filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7))'}} />
-					<Crest src="rma.svg" size={360} style={{position: 'absolute', left: 630 - Math.sin(orbit * Math.PI) * 20, top: 760, transform: `scale(${0.9 + orbit * 0.1}) rotateY(${-(1 - orbit) * 30}deg)`, filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7))'}} />
-					<div style={{position: 'absolute', left: 0, right: 0, top: 560, display: 'flex', justifyContent: 'space-around', opacity: tween(f, 120, 30)}}>
-						<Mono size={18} color={C.ink}>FCB · HOME</Mono>
-						<Mono size={18} color={C.ink}>RMA · AWAY</Mono>
-					</div>
-				</AbsoluteFill>
-			)}
-			{wide > 0 ? (
-				<AbsoluteFill style={{opacity: wide}}>
-					<Stadium lights={1} z={interpolate(f, [430, 720], [1.0, 1.35], clamp)} ty={60} />
-					<Fog />
-					{/* flags rising in the stands */}
-					<Full>
-						{Array.from({length: 18}).map((_, i) => {
-							const x = 120 + i * 50;
-							const rise = tween(f, 470 + i * 4, 40);
-							const wave = Math.sin(f / 8 + i) * 8;
-							const col = i % 2 ? C.fcbBlue : C.fcbGarnet;
-							return <path key={i} d={`M${x} ${1420 - rise * 120} l0 120 M${x} ${1420 - rise * 120} q30 ${wave} 60 0 l0 40 q-30 ${-wave} -60 0z`} fill={col} stroke="rgba(244,242,238,0.5)" strokeWidth={1.5} opacity={rise} />;
-						})}
-					</Full>
-					{/* the match ball settles at the centre spot */}
-					<div style={{position: 'absolute', left: 540, top: 1110, width: 46, height: 46, marginLeft: -23, marginTop: -23, borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #fff, #ccc 55%, #444)', transform: `translateY(${-(1 - tween(f, 600, 60, 0, 1, EXPO)) * 200}px) rotate(${f * 4}deg)`, opacity: tween(f, 600, 10)}} />
-				</AbsoluteFill>
-			) : null}
-		</AbsoluteFill>
-	);
-};
-
-// ---------------------------------------------------------------- S6 · 43–53 s · the explosion
 const Shake: React.FC<{hits: number[]; children: React.ReactNode}> = ({hits, children}) => {
 	const f = useCurrentFrame();
 	let dx = 0;
@@ -560,78 +313,7 @@ const Shake: React.FC<{hits: number[]; children: React.ReactNode}> = ({hits, chi
 	return <AbsoluteFill style={{transform: `translate(${dx}px, ${dy}px)`}}>{children}</AbsoluteFill>;
 };
 
-const S6: React.FC = () => {
-	const f = useCurrentFrame(); // local 0 = 43.0 s
-	// beats (local frames): flashes of players / crests, then counter and words
-	const cuts: {at: number; kind: 'p' | 'c'; key: string; tint?: [string, string]}[] = [
-		{at: 0, kind: 'p', key: 'yamal', tint: [C.fcbBlue, '#05050f']},
-		{at: 30, kind: 'p', key: 'mbappe', tint: ['#E9E2CF', '#141006']},
-		{at: 60, kind: 'c', key: 'fcb.svg'},
-		{at: 156, kind: 'c', key: 'rma.svg'},
-		{at: 240, kind: 'p', key: 'pedri', tint: [C.fcbGarnet, '#120208']},
-		{at: 262, kind: 'p', key: 'bellingham', tint: ['#E9E2CF', '#141006']},
-		{at: 284, kind: 'p', key: 'raphinha', tint: [C.fcbBlue, '#05050f']},
-		{at: 306, kind: 'p', key: 'valverde', tint: ['#E9E2CF', '#141006']},
-	];
-	const active = [...cuts].reverse().find((c) => f >= c.at && f < 330);
-	const minute = Math.round(interpolate(f, [276, 350], [0, 90], clamp));
-	return (
-		<Shake hits={[60, 156, 276, 360]}>
-			<AbsoluteFill style={{background: '#000'}} />
-			{active && active.kind === 'p' ? <Portrait p={PL[active.key]} x={0} y={0} w={1080} h={1920} from={active.at} tint={active.tint!} zoom={[1.15, 1.3]} /> : null}
-			{active && active.kind === 'c' ? (
-				<AbsoluteFill style={{background: active.key === 'fcb.svg' ? `linear-gradient(90deg, ${C.fcbBlue}, ${C.fcbGarnet})` : 'linear-gradient(180deg, #f3f0e8, #c9b886)'}}>
-					<Crest src={active.key} size={620} style={{position: 'absolute', left: 230, top: 600, transform: `scale(${1.25 - 0.25 * pop(f, active.at, 12)})`}} />
-					<div style={{position: 'absolute', top: 1380, width: '100%', textAlign: 'center'}}>
-						<Big size={150} color={active.key === 'fcb.svg' ? C.fcbGold : '#111'}>{active.key === 'fcb.svg' ? 'BARCELONA' : 'REAL MADRID'}</Big>
-					</div>
-				</AbsoluteFill>
-			) : null}
-			{/* 47.6 s "ninety minutes": the match clock runs 0 → 90 */}
-			{f >= 276 && f < 420 ? (
-				<AbsoluteFill style={{background: f >= 330 ? '#000' : 'transparent'}}>
-					<div style={{position: 'absolute', top: 700, width: '100%', textAlign: 'center'}}>
-						<Big size={420} color={f >= 340 ? C.red : C.ink}>{`${minute}'`}</Big>
-					</div>
-					<div style={{position: 'absolute', top: 1150, width: '100%', textAlign: 'center'}}>
-						<Scramble text="90 MINUTES." at={290} dur={18} size={60} font={display} />
-					</div>
-				</AbsoluteFill>
-			) : null}
-			{/* 49 s "eternal pride" */}
-			{f >= 360 && f < 492 ? (
-				<AbsoluteFill style={{background: '#000'}}>
-					<div style={{position: 'absolute', top: 640, width: '100%', textAlign: 'center'}}>
-						<Big size={200}>90 MINUTES.</Big>
-						<Big size={200} color={C.rmaGold} style={{opacity: tween(f, 372, 14)}}>
-							ETERNAL PRIDE.
-						</Big>
-					</div>
-				</AbsoluteFill>
-			) : null}
-			{/* 51.2 s "this is not just football" — sparks */}
-			{f >= 492 ? (
-				<AbsoluteFill style={{background: '#000'}}>
-					<Full>
-						{Array.from({length: 60}).map((_, i) => {
-							const t = f - 492;
-							const a = rand(i, 41) * Math.PI * 2;
-							const v = 4 + rand(i, 42) * 10;
-							return <circle key={i} cx={540 + Math.cos(a) * v * t} cy={960 + Math.sin(a) * v * t + 0.05 * t * t} r={2 + rand(i, 43) * 3} fill={i % 3 ? C.rmaGold : C.fcbGarnet} opacity={Math.max(0, 1 - t / 80)} />;
-						})}
-					</Full>
-					<div style={{position: 'absolute', top: 820, width: '100%', textAlign: 'center'}}>
-						<Big size={120}>THIS IS NOT</Big>
-						<Big size={120}>JUST FOOTBALL.</Big>
-					</div>
-				</AbsoluteFill>
-			) : null}
-			{[60, 156, 276, 360].map((h) => (f >= h && f < h + 6 ? <AbsoluteFill key={h} style={{background: '#fff', opacity: 1 - (f - h) / 6}} /> : null))}
-		</Shake>
-	);
-};
 
-// ---------------------------------------------------------------- S7 · 53–60 s · the title
 const Metal: React.FC<{children: React.ReactNode; size: number; sweep: number}> = ({children, size, sweep}) => (
 	<div
 		style={{
@@ -651,46 +333,6 @@ const Metal: React.FC<{children: React.ReactNode; size: number; sweep: number}> 
 	</div>
 );
 
-const S7: React.FC = () => {
-	const f = useCurrentFrame(); // local 0 = 53.0 s
-	const inL = tween(f, 10, 50, 0, 1, EXPO);
-	const inR = tween(f, 16, 50, 0, 1, EXPO);
-	const HIT = s(57) - s(53); // title on the musical hit
-	const flash = f >= HIT && f < HIT + 8 ? 1 - (f - HIT) / 8 : 0;
-	const lightsOut = tween(f, 360, 60, 0, 1, IN_OUT);
-	return (
-		<AbsoluteFill style={{opacity: 1 - lightsOut * 0.85}}>
-			<Stadium lights={1 - lightsOut} z={1.5} ty={260} pitch={0.6} />
-			{/* frozen ball at the centre */}
-			<div style={{position: 'absolute', left: 540, top: 1240, width: 80, height: 80, marginLeft: -40, marginTop: -40, borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #fff, #ccc 55%, #444)', opacity: 1 - tween(f, HIT - 10, 20)}} />
-			<Crest src="fcb.svg" size={300} style={{position: 'absolute', left: interpolate(inL, [0, 1], [-400, 150]), top: 480}} />
-			<Crest src="rma.svg" size={300} style={{position: 'absolute', left: interpolate(inR, [0, 1], [1180, 630]), top: 480}} />
-			<div style={{position: 'absolute', left: 540, top: 630, width: 260, height: 260, marginLeft: -130, marginTop: -130, background: 'radial-gradient(circle, rgba(255,250,235,0.9), transparent 65%)', opacity: tween(f, 50, 10) * (1 - tween(f, 70, 40))}} />
-			{f >= HIT ? (
-				<div style={{position: 'absolute', top: 900, width: '100%', textAlign: 'center', transform: `scale(${1.3 - 0.3 * pop(f, HIT, 13)})`}}>
-					<Metal size={210} sweep={tween(f, HIT, 120, 0, 1, IN_OUT)}>EL CLÁSICO</Metal>
-				</div>
-			) : null}
-			<div style={{position: 'absolute', top: 1140, width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 18, alignItems: 'center'}}>
-				{f >= HIT + 20 ? <Scramble text="25 OCTOBER 2026" at={HIT + 20} dur={20} size={58} font={display} color={C.ink} /> : null}
-				{f >= HIT + 36 ? <Scramble text="SPOTIFY CAMP NOU · BARCELONA" at={HIT + 36} dur={20} size={26} /> : null}
-				{f >= HIT + 56 ? <Scramble text="TWO GIANTS. ONE BATTLE." at={HIT + 56} dur={20} size={30} color={C.red} /> : null}
-			</div>
-			<AbsoluteFill style={{background: '#fff', opacity: flash}} />
-		</AbsoluteFill>
-	);
-};
-
-// ---------------------------------------------------------------- audio
-// music: Another Side — duck to silence at 31 s (the script's sudden silence), dip under the VO
-const musicVol = (f: number) => {
-	const fadeIn = interpolate(f, [0, 30, 200], [0, 0.25, 0.6], clamp);
-	const silence = interpolate(f, [s(30.9), s(31.0), s(31.8), s(32.3)], [1, 0, 0, 1], clamp);
-	const duck = interpolate(f, [s(31.8), s(32.0), s(42.6), s(43.0)], [1, 0.55, 0.55, 1], clamp);
-	const duck2 = interpolate(f, [s(43.6), s(44.0), s(56.6), s(57.0)], [1, 0.7, 0.7, 1], clamp);
-	const end = interpolate(f, [s(58.5), s(60)], [1, 0], clamp);
-	return fadeIn * silence * duck * duck2 * end;
-};
 
 const Sfx: React.FC<{at: number; src: string; v?: number}> = ({at, src, v = 0.4}) => (
 	<Sequence from={Math.round(at)} layout="none">
@@ -698,68 +340,301 @@ const Sfx: React.FC<{at: number; src: string; v?: number}> = ({at, src, v = 0.4}
 	</Sequence>
 );
 
+// ---------------------------------------------------------------- captions for the VO lines that the scene doesn't already spell
+const VOCaption: React.FC = () => {
+	const f = useCurrentFrame();
+	return (
+		<>
+			{VO.filter((v) => v.cap).map((v, i) => {
+				const a = s(v.at);
+				const end = a + s(v.to - v.from) + 24;
+				if (f < a || f > end + 20) return null;
+				const p = tween(f, a, 12);
+				const out = tween(f, end, 18, 0, 1, IN_OUT);
+				return (
+					<div key={i} style={{position: 'absolute', left: 60, right: 60, top: 1560, textAlign: 'center', opacity: p * (1 - out), transform: `translateY(${(1 - p) * 20}px)`}}>
+						<Scramble text={v.text} at={a} dur={12} size={58} />
+					</div>
+				);
+			})}
+		</>
+	);
+};
+
+// ---------------------------------------------------------------- A · 0–5.4 s · the stadium wakes (VO: for some / it's a game / for them / it's everything)
+const A: React.FC = () => {
+	const f = useCurrentFrame();
+	const lights = tween(f, 0, 230, 0.15, 1, (x) => x);
+	const z = interpolate(f, [0, 324], [0.7, 1.3], {...clamp, easing: IN_OUT});
+	const ty = interpolate(f, [0, 324], [-180, 120], {...clamp, easing: IN_OUT});
+	const pulse = 1 + 0.04 * Math.max(0, Math.sin((f / 72) * Math.PI * 2)) ** 8;
+	return (
+		<AbsoluteFill style={{transform: `scale(${pulse})`}}>
+			<Stadium lights={lights} z={z} ty={ty} />
+			<Fog o={0.8 + 0.2 * lights} />
+			<div style={{position: 'absolute', top: 300, width: '100%', textAlign: 'center'}}>
+				<Big size={150}>EL CLÁSICO</Big>
+			</div>
+			<div style={{position: 'absolute', top: 470, width: '100%', textAlign: 'center'}}>
+				<Scramble text="FC BARCELONA × REAL MADRID · 25.10.2026" at={10} dur={40} size={24} color={C.muted} />
+			</div>
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- B · 5.4–8.1 s · two giants, two legacies
+const B: React.FC = () => {
+	const f = useCurrentFrame();
+	const split = tween(f, 0, 30, 0, 1, WHIP);
+	const orbit = interpolate(f, [0, 162], [0, 1], clamp);
+	return (
+		<AbsoluteFill>
+			<div style={{position: 'absolute', left: 0, top: 0, width: 540, height: 1920, transform: `translateX(${-(1 - split) * 540}px)`, background: `linear-gradient(180deg, ${C.fcbBlue}66, ${C.fcbGarnet}88)`}} />
+			<div style={{position: 'absolute', left: 540, top: 0, width: 540, height: 1920, transform: `translateX(${(1 - split) * 540}px)`, background: 'linear-gradient(180deg, rgba(247,245,240,0.25), rgba(212,175,55,0.3))'}} />
+			<div style={{position: 'absolute', left: 538, top: 0, width: 4, height: 1920 * split, background: C.ink}} />
+			<Crest src="fcb.svg" size={360} style={{position: 'absolute', left: 90, top: 760, transform: `scale(${(0.9 + orbit * 0.12) * pop(f, 8, 13)})`, filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7))'}} />
+			<Crest src="rma.svg" size={360} style={{position: 'absolute', left: 630, top: 760, transform: `scale(${(0.9 + orbit * 0.12) * pop(f, 16, 13)})`, filter: 'drop-shadow(0 30px 60px rgba(0,0,0,0.7))'}} />
+			<div style={{position: 'absolute', left: 0, right: 0, top: 560, display: 'flex', justifyContent: 'space-around', opacity: tween(f, 20, 20)}}>
+				<Mono size={20}>FC BARCELONA · EST. 1899</Mono>
+				<Mono size={20}>REAL MADRID · EST. 1902</Mono>
+			</div>
+			{/* "two legacies": founding years count in */}
+			<div style={{position: 'absolute', left: 0, right: 0, top: 1240, display: 'flex', justifyContent: 'space-around', opacity: tween(f, 78, 16)}}>
+				<Big size={110} color={C.fcbGold}>1899</Big>
+				<Big size={110} color={C.rmaGold}>1902</Big>
+			</div>
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- C · 8.1–10.3 s · one battlefield
+const Cc: React.FC = () => {
+	const f = useCurrentFrame();
+	return (
+		<AbsoluteFill style={{opacity: tween(f, 0, 14)}}>
+			<Stadium lights={1} z={interpolate(f, [0, 132], [1.0, 1.4], clamp)} ty={60} />
+			<Fog />
+			<Full>
+				{Array.from({length: 18}).map((_, i) => {
+					const x = 120 + i * 50;
+					const rise = tween(f, 6 + i * 3, 30);
+					const wave = Math.sin(f / 8 + i) * 8;
+					const col = i % 2 ? C.fcbBlue : C.fcbGarnet;
+					return <path key={i} d={`M${x} ${1420 - rise * 120} l0 120 M${x} ${1420 - rise * 120} q30 ${wave} 60 0 l0 40 q-30 ${-wave} -60 0z`} fill={col} stroke="rgba(244,242,238,0.5)" strokeWidth={1.5} opacity={rise} />;
+				})}
+			</Full>
+			<div style={{position: 'absolute', left: 540, top: 1110, width: 46, height: 46, marginLeft: -23, marginTop: -23, borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #fff, #ccc 55%, #444)', transform: `translateY(${-(1 - tween(f, 40, 50, 0, 1, EXPO)) * 200}px) rotate(${f * 4}deg)`, opacity: tween(f, 40, 8)}} />
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- crest slam (club name spoken)
+const Slam: React.FC<{crest: string; name: string; bg: string; color: string}> = ({crest, name, bg, color}) => {
+	const f = useCurrentFrame();
+	return (
+		<AbsoluteFill style={{background: bg}}>
+			<Crest src={crest} size={620} style={{position: 'absolute', left: 230, top: 560, transform: `scale(${1.3 - 0.3 * pop(f, 0, 12)})`}} />
+			<div style={{position: 'absolute', top: 1320, width: '100%', textAlign: 'center'}}>
+				<Big size={160} color={color}>{name}</Big>
+			</div>
+			{f < 6 ? <AbsoluteFill style={{background: '#fff', opacity: 1 - f / 6}} /> : null}
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- D · 10.3–15.2 s · Barcelona
+const D: React.FC = () => {
+	const f = useCurrentFrame();
+	const tint: [string, string] = [C.fcbBlue, '#0a0a1a'];
+	return (
+		<AbsoluteFill>
+			{f < 54 ? (
+				<Slam crest="fcb.svg" name="BARCELONA" bg={`linear-gradient(90deg, ${C.fcbBlue}, ${C.fcbGarnet})`} color={C.fcbGold} />
+			) : (
+				<AbsoluteFill>
+					<Stripes f={f} o={1} />
+					<PlayerBeat p={PL.yamal} at={54} dur={72} tint={tint} idx="01" club="FC BARCELONA" freeze={100} />
+					<PlayerBeat p={PL.pedri} at={126} dur={60} tint={[C.fcbGarnet, '#120208']} idx="02" club="FC BARCELONA" />
+					<PlayerBeat p={PL.raphinha} at={186} dur={54} tint={[C.fcbBlue, C.fcbGarnet]} idx="03" club="FC BARCELONA" />
+					{f >= 240 ? <KitCard src="fcb-golf.jpg" at={240} title="BARÇA × GOLF WANG" rows={[['SEASON', '26/27'], ['EDITION', 'LIMITED · 1,899'], ['CHEST', 'GOLF']]} accent={C.fcbGarnet} bg="#0b1220" /> : null}
+					<div style={{position: 'absolute', top: 170, width: '100%', textAlign: 'center', opacity: tween(f, 60, 14)}}>
+						<Big size={124} color={C.fcbGold}>MÉS QUE UN CLUB.</Big>
+					</div>
+				</AbsoluteFill>
+			)}
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- E · 15.2–20.2 s · Real Madrid
+const E: React.FC = () => {
+	const f = useCurrentFrame();
+	const tintRM: [string, string] = ['#E9E2CF', '#141006'];
+	return (
+		<AbsoluteFill>
+			{f < 54 ? (
+				<Slam crest="rma.svg" name="REAL MADRID" bg="linear-gradient(180deg, #f3f0e8, #c9b886)" color="#111" />
+			) : (
+				<AbsoluteFill>
+					<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 35%, #1a160c, #030304 70%)'}} />
+					<GoldStreaks f={f} o={1} />
+					{f < 126 ? (
+						<AbsoluteFill>
+							<Portrait p={PL.mbappe} x={90} y={300} w={900} h={1240} from={54} tint={tintRM} zoom={[1.0, 1.1]} side={tween(f, 54, 50, 0.2, 1, IN_OUT)} />
+							<Full>
+								<Brackets x={90} y={300} w={900} h={1240} p={tween(f, 60, 16)} color="rgba(212,175,55,0.8)" />
+							</Full>
+							<div style={{position: 'absolute', left: 110, top: 1420}}>
+								<span style={{background: C.rmaGold, color: '#000', fontFamily: mono, fontSize: 22, padding: '2px 10px', marginRight: 14}}>04</span>
+								<Scramble text={PL.mbappe.name} at={64} dur={20} size={30} />
+							</div>
+							<div style={{position: 'absolute', left: 110, top: 1470, opacity: tween(f, 70, 16)}}>
+								<Mono size={16} color={C.muted}>REAL MADRID · ST · PHOTO SdHb</Mono>
+							</div>
+						</AbsoluteFill>
+					) : null}
+					<PlayerBeat p={PL.bellingham} at={126} dur={60} tint={tintRM} idx="05" club="REAL MADRID" />
+					<PlayerBeat p={PL.valverde} at={186} dur={54} tint={tintRM} idx="06" club="REAL MADRID" freeze={220} />
+					{f >= 240 ? <KitCard src="rma-home.jpg" at={240} title="REAL MADRID HOME" rows={[['SEASON', '26/27'], ['COLLAR', 'DARK GREEN'], ['STRIPES', 'PINK']]} accent={C.rmaGold} bg="#ECEAE4" /> : null}
+					<div style={{position: 'absolute', top: 170, width: '100%', textAlign: 'center', opacity: tween(f, 60, 14)}}>
+						<Big size={112} color={C.rmaGold}>HISTORY DOESN'T BOW.</Big>
+					</div>
+				</AbsoluteFill>
+			)}
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- F · 20.2–23.2 s · ninety minutes, eternal pride
+const F_: React.FC = () => {
+	const f = useCurrentFrame();
+	const minute = Math.round(interpolate(f, [8, 80], [0, 90], {...clamp, easing: IN_OUT}));
+	const pride = f >= 102;
+	return (
+		<AbsoluteFill style={{background: '#000'}}>
+			<Full>
+				<circle cx={540} cy={840} r={300} fill="none" stroke="rgba(244,242,238,0.15)" strokeWidth={6} />
+				<circle cx={540} cy={840} r={300} fill="none" stroke={C.red} strokeWidth={6} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - minute / 90} transform="rotate(-90 540 840)" />
+			</Full>
+			<div style={{position: 'absolute', top: 640, width: '100%', textAlign: 'center'}}>
+				<Big size={360} color={minute === 90 ? C.red : C.ink}>{`${minute}'`}</Big>
+			</div>
+			<div style={{position: 'absolute', top: 1220, width: '100%', textAlign: 'center'}}>
+				<Big size={150}>90 MINUTES.</Big>
+				{pride ? (
+					<Big size={150} color={C.rmaGold} style={{opacity: tween(f, 102, 12)}}>
+						ETERNAL PRIDE.
+					</Big>
+				) : null}
+			</div>
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- G · 23.2–25.0 s · this is not just football (rapid flashes)
+const G: React.FC = () => {
+	const f = useCurrentFrame();
+	const order: [string, [string, string]][] = [
+		['yamal', [C.fcbBlue, '#05050f']],
+		['mbappe', ['#E9E2CF', '#141006']],
+		['pedri', [C.fcbGarnet, '#120208']],
+		['bellingham', ['#E9E2CF', '#141006']],
+		['raphinha', [C.fcbBlue, '#05050f']],
+		['valverde', ['#E9E2CF', '#141006']],
+	];
+	const k = Math.min(order.length - 1, Math.floor(f / 18));
+	const [key, tint] = order[k];
+	return (
+		<Shake hits={[0, 36, 72]}>
+			<Portrait p={PL[key]} x={0} y={0} w={1080} h={1920} from={k * 18} tint={tint} zoom={[1.2, 1.3]} />
+			<AbsoluteFill style={{background: 'rgba(0,0,0,0.45)'}} />
+			<div style={{position: 'absolute', top: 820, width: '100%', textAlign: 'center'}}>
+				<Big size={130}>THIS IS NOT</Big>
+				<Big size={130} style={{opacity: tween(f, 40, 10)}}>
+					JUST FOOTBALL.
+				</Big>
+			</div>
+		</Shake>
+	);
+};
+
+// ---------------------------------------------------------------- H · 25.0–32 s · the title, on the music's kick
+const H: React.FC = () => {
+	const f = useCurrentFrame();
+	const inL = tween(f, 0, 30, 0, 1, EXPO);
+	const inR = tween(f, 3, 30, 0, 1, EXPO);
+	const flash = f < 8 ? 1 - f / 8 : 0;
+	const lightsOut = tween(f, 340, 70, 0, 1, IN_OUT);
+	return (
+		<AbsoluteFill style={{opacity: 1 - lightsOut * 0.9}}>
+			<Stadium lights={1 - lightsOut} z={1.5} ty={260} pitch={0.6} />
+			<Crest src="fcb.svg" size={300} style={{position: 'absolute', left: interpolate(inL, [0, 1], [-400, 150]), top: 480}} />
+			<Crest src="rma.svg" size={300} style={{position: 'absolute', left: interpolate(inR, [0, 1], [1180, 630]), top: 480}} />
+			<div style={{position: 'absolute', top: 880, width: '100%', textAlign: 'center', transform: `scale(${1.3 - 0.3 * pop(f, 0, 13)})`}}>
+				<Metal size={210} sweep={tween(f, 0, 140, 0, 1, IN_OUT)}>EL CLÁSICO</Metal>
+			</div>
+			<div style={{position: 'absolute', top: 1170, width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 18, alignItems: 'center'}}>
+				{f >= 30 ? <Scramble text="25 OCTOBER 2026" at={30} dur={20} size={58} font={display} color={C.ink} /> : null}
+				{f >= 46 ? <Scramble text="SPOTIFY CAMP NOU · 21:00 CET" at={46} dur={20} size={26} /> : null}
+				{f >= 66 ? <Scramble text="TWO GIANTS. ONE BATTLE." at={66} dur={20} size={30} color={C.red} /> : null}
+			</div>
+			<AbsoluteFill style={{background: '#fff', opacity: flash}} />
+		</AbsoluteFill>
+	);
+};
+
+// ---------------------------------------------------------------- audio
+// music: "Achilles" from 0:02, so its kick (0:27) lands on the title at 25 s; sits under the voice, opens up after
+const MUSIC_START = 2;
+const musicVol = (f: number) => {
+	const fadeIn = interpolate(f, [0, 20], [0, 1], clamp);
+	const bed = interpolate(f, [s(24.9), s(25.05)], [0.42, 0.75], clamp);
+	const end = interpolate(f, [s(30.6), s(32)], [1, 0], clamp);
+	return fadeIn * bed * end;
+};
+
 // ---------------------------------------------------------------- timeline
+const CUTS: [number, number, React.FC][] = [
+	[0, 5.4, A],
+	[5.4, 8.1, B],
+	[8.1, 10.3, Cc],
+	[10.3, 15.2, D],
+	[15.2, 20.2, E],
+	[20.2, 23.2, F_],
+	[23.2, 25.0, G],
+	[25.0, 32, H],
+];
+
 export const Clasico: React.FC = () => {
 	const f = useCurrentFrame();
-	const blackStart = f < 30;
 	return (
 		<AbsoluteFill style={{backgroundColor: C.bg}}>
-			{blackStart ? null : (
-				<>
-					<Sequence from={0} durationInFrames={360}>
-						<S1 />
-					</Sequence>
-					<Sequence from={360} durationInFrames={420}>
-						<S2 />
-					</Sequence>
-					<Sequence from={780} durationInFrames={540}>
-						<S3 />
-					</Sequence>
-					<Sequence from={1320} durationInFrames={540}>
-						<S4 />
-					</Sequence>
-					<Sequence from={1860} durationInFrames={720}>
-						<S5 />
-					</Sequence>
-					<Sequence from={2580} durationInFrames={600}>
-						<S6 />
-					</Sequence>
-					<Sequence from={3180} durationInFrames={420}>
-						<S7 />
-					</Sequence>
-				</>
-			)}
-			{/* whip pan streaks into Barça (12.8–13.1 s) */}
-			{f >= 760 && f < 800 ? (
-				<AbsoluteFill style={{background: `repeating-linear-gradient(0deg, rgba(255,255,255,0.0) 0 40px, rgba(255,255,255,0.18) 40px 44px)`, transform: `translateX(${interpolate(f, [760, 800], [-1080, 1080], {...clamp, easing: WHIP})}px)`}} />
-			) : null}
-			{f >= 1860 && f < 2580 ? (
-				<Sequence from={1860} durationInFrames={720} layout="none">
-					<VOCaption base={1860} />
+			{CUTS.map(([a, b, Scene], i) => (
+				<Sequence key={i} from={s(a)} durationInFrames={s(b) - s(a)}>
+					<Scene />
 				</Sequence>
+			))}
+			{/* whip streak between the giants and the battlefield */}
+			{f >= s(8.0) && f < s(8.25) ? (
+				<AbsoluteFill style={{background: 'repeating-linear-gradient(0deg, rgba(255,255,255,0) 0 40px, rgba(255,255,255,0.18) 40px 44px)', transform: `translateX(${interpolate(f, [s(8.0), s(8.25)], [-1080, 1080], {...clamp, easing: WHIP})}px)`}} />
 			) : null}
+			<VOCaption />
 			<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,0.65))', pointerEvents: 'none'}} />
 			<Grain />
 			<HUD />
 
-			<Audio src={staticFile('clasico/music.mp3')} volume={musicVol} />
+			<Audio src={staticFile('clasico/music.mp3')} startFrom={s(MUSIC_START)} volume={musicVol} />
 			{VO.map((v, i) => (
 				<Sequence key={i} from={s(v.at)} durationInFrames={s(v.to - v.from) + 2} layout="none">
 					<Audio src={staticFile('clasico/vo/vo.wav')} startFrom={s(v.from)} endAt={s(v.to)} volume={1} />
 				</Sequence>
 			))}
-			<Sfx at={20} src="wind.wav" v={0.35} />
-			<Sfx at={60} src="heartbeat.wav" v={0.6} />
-			<Sfx at={348} src="boom.wav" v={0.5} />
-			<Sfx at={380} src="crowd.wav" v={0.18} />
-			<Sfx at={740} src="whoosh.wav" v={0.35} />
-			<Sfx at={1290} src="riser.wav" v={0.3} />
-			<Sfx at={1830} src="boom.wav" v={0.45} />
-			<Sfx at={s(43) + 60} src="hit.wav" v={0.45} />
-			<Sfx at={s(43) + 156} src="hit.wav" v={0.4} />
-			<Sfx at={s(55.2)} src="riser.wav" v={0.25} />
-			<Sfx at={s(57)} src="boom.wav" v={0.5} />
-			<Sfx at={s(58)} src="crowd.wav" v={0.15} />
+			<Sfx at={0} src="heartbeat.wav" v={0.5} />
+			<Sfx at={s(5.3)} src="whoosh.wav" v={0.3} />
+			<Sfx at={s(10.3)} src="boom.wav" v={0.4} />
+			<Sfx at={s(15.2)} src="hit.wav" v={0.4} />
+			<Sfx at={s(23.0)} src="riser.wav" v={0.25} />
+			<Sfx at={s(25.6)} src="crowd.wav" v={0.14} />
 		</AbsoluteFill>
 	);
 };

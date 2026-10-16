@@ -1,6 +1,6 @@
 # Credits — El Clásico trailer
 
-- Music: "Another Side" (dark hybrid trailer) — Bensound.com (demo file; get the licence/credit code on bensound.com before publishing)
+- Music: "Achilles" Kevin MacLeod (incompetech.com), CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
 - Voiceover: supplied by the user (AI-generated)
 - Crests: FC Barcelona and Real Madrid CF official crests (Wikipedia file pages)
 - Kits: official 26/27 product images — store.fcbarcelona.com (Barça × Golf Wang), shop.realmadrid.com (Home 26/27)
