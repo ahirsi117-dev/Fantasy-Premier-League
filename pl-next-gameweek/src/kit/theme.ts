@@ -1,20 +1,32 @@
-import {loadFont as loadArabic} from '@remotion/google-fonts/IBMPlexSansArabic';
-import {loadFont as loadInter} from '@remotion/google-fonts/Inter';
-import {Easing, interpolate, spring} from 'remotion';
+import {loadFont} from '@remotion/fonts';
+import {Easing, interpolate, spring, staticFile} from 'remotion';
 
 export const FPS = 60;
 
-export const arabic = loadArabic('normal', {weights: ['400', '500', '600', '700'], subsets: ['arabic', 'latin']}).fontFamily;
-export const inter = loadInter('normal', {weights: ['400', '500', '600', '700', '800'], subsets: ['latin']}).fontFamily;
+// Fonts are bundled in public/fonts (Google Fonts, OFL) so renders never depend on the network
+const face = (family: string, file: string, weight: string) => loadFont({family, url: staticFile(`fonts/${file}`), weight});
+face('Cairo', 'Cairo-400.ttf', '400');
+face('Cairo', 'Cairo-700.ttf', '700');
+face('Cairo', 'Cairo-900.ttf', '900');
+face('Anton', 'Anton-400.ttf', '400');
+face('Inter', 'Inter-500.ttf', '500');
+face('Inter', 'Inter-700.ttf', '700');
+face('Inter', 'Inter-800.ttf', '800');
 
-// Palette — change per project (keep one accent colour)
+export const arabic = 'Cairo';
+export const inter = 'Inter';
+export const display = 'Anton';
+
+// Palette — matchday night: black stage, white hairlines, one accent (Premier League green)
 export const C = {
-	bg: '#FAFAF8',
-	ink: '#111111',
-	muted: '#8C8C88',
-	hair: 'rgba(17,17,17,0.85)',
-	accent: '#D97757',
-	card: '#FFFFFF',
+	bg: '#050506',
+	ink: '#FFFFFF',
+	muted: '#8E8E93',
+	hair: 'rgba(255,255,255,0.55)',
+	accent: '#00FF85',
+	card: '#121214',
+	border: 'rgba(255,255,255,0.12)',
+	pitch: '#2E7D32',
 };
 
 // Easing presets
@@ -29,6 +41,5 @@ export const tween = (f: number, start: number, dur: number, from = 0, to = 1, e
 export const smooth = (f: number, delay = 0, dur = 24) => spring({frame: f - delay, fps: FPS, config: {damping: 200}, durationInFrames: dur});
 export const pop = (f: number, delay = 0, damping = 14) => spring({frame: f - delay, fps: FPS, config: {damping, stiffness: 130, mass: 0.7}});
 
-// T(seconds into the voiceover) -> frame, when the voice starts VOICE_OFFSET seconds into the video
-export const VOICE_OFFSET = 0.5;
-export const T = (s: number) => Math.round((s + VOICE_OFFSET) * FPS);
+// seconds -> frame
+export const T = (s: number) => Math.round(s * FPS);
