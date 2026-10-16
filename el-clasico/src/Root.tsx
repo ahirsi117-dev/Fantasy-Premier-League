@@ -1,10 +1,9 @@
 import {Composition} from 'remotion';
-import {Demo, DEMO_TOTAL} from './Demo';
+import {Clasico, CLASICO_TOTAL} from './Clasico';
 import {FPS} from './kit/theme';
 
-// Add one <Composition> per video (or per soundtrack variant).
 export const RemotionRoot: React.FC = () => (
 	<>
-		<Composition id="Demo" component={Demo} durationInFrames={DEMO_TOTAL} fps={FPS} width={1080} height={1920} />
+		<Composition id="Clasico" component={Clasico} durationInFrames={CLASICO_TOTAL} fps={FPS} width={1080} height={1920} />
 	</>
 );

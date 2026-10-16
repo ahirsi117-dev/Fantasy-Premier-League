@@ -1,34 +1,56 @@
-import {loadFont as loadArabic} from '@remotion/google-fonts/IBMPlexSansArabic';
-import {loadFont as loadInter} from '@remotion/google-fonts/Inter';
-import {Easing, interpolate, spring} from 'remotion';
+import {loadFont} from '@remotion/fonts';
+import {Easing, interpolate, spring, staticFile} from 'remotion';
 
 export const FPS = 60;
 
-export const arabic = loadArabic('normal', {weights: ['400', '500', '600', '700'], subsets: ['arabic', 'latin']}).fontFamily;
-export const inter = loadInter('normal', {weights: ['400', '500', '600', '700', '800'], subsets: ['latin']}).fontFamily;
+// bundled fonts (Google Fonts, OFL) so renders never depend on the network
+const face = (family: string, file: string, weight: string) => loadFont({family, url: staticFile(`fonts/${file}`), weight});
+face('Anton', 'Anton-400.ttf', '400');
+face('Inter', 'Inter-500.ttf', '500');
+face('Inter', 'Inter-700.ttf', '700');
+face('Inter', 'Inter-800.ttf', '800');
+face('PlexMono', 'PlexMono-400.ttf', '400');
+face('PlexMono', 'PlexMono-600.ttf', '600');
+face('Cairo', 'Cairo-700.ttf', '700');
 
-// Palette — change per project (keep one accent colour)
+export const display = 'Anton';
+export const mono = 'PlexMono';
+export const inter = 'Inter';
+export const arabic = 'Cairo';
+
 export const C = {
-	bg: '#FAFAF8',
-	ink: '#111111',
-	muted: '#8C8C88',
-	hair: 'rgba(17,17,17,0.85)',
-	accent: '#D97757',
-	card: '#FFFFFF',
+	bg: '#030304',
+	ink: '#F4F2EE',
+	muted: '#8B8B90',
+	hair: 'rgba(244,242,238,0.5)',
+	red: '#E5402F', // HUD accent (reference: red tags / numbers)
+	fcbBlue: '#004D98',
+	fcbGarnet: '#A50044',
+	fcbGold: '#EDBB00',
+	rmaGold: '#D4AF37',
+	rmaWhite: '#F7F5F0',
+	rmaGreen: '#0E3B33',
+	accent: '#E5402F',
+	card: '#111113',
 };
 
-// Easing presets
-export const EXPO = Easing.bezier(0.16, 1, 0.3, 1); // entrances: fast start, very soft landing
-export const IN_OUT = Easing.bezier(0.65, 0, 0.35, 1); // calm camera moves, exits
-export const WHIP = Easing.bezier(0.83, 0, 0.17, 1); // energetic camera moves between boards
+// legacy names used by kit.tsx
+export const arabicFont = arabic;
+
+export const EXPO = Easing.bezier(0.16, 1, 0.3, 1);
+export const IN_OUT = Easing.bezier(0.65, 0, 0.35, 1);
+export const WHIP = Easing.bezier(0.83, 0, 0.17, 1);
 
 export const tween = (f: number, start: number, dur: number, from = 0, to = 1, easing: (t: number) => number = EXPO) =>
 	interpolate(f, [start, start + dur], [from, to], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing});
 
-// spring helpers
 export const smooth = (f: number, delay = 0, dur = 24) => spring({frame: f - delay, fps: FPS, config: {damping: 200}, durationInFrames: dur});
 export const pop = (f: number, delay = 0, damping = 14) => spring({frame: f - delay, fps: FPS, config: {damping, stiffness: 130, mass: 0.7}});
 
-// T(seconds into the voiceover) -> frame, when the voice starts VOICE_OFFSET seconds into the video
-export const VOICE_OFFSET = 0.5;
-export const T = (s: number) => Math.round((s + VOICE_OFFSET) * FPS);
+export const T = (s: number) => Math.round(s * FPS);
+
+// deterministic pseudo-random in [0,1)
+export const rand = (a: number, b = 0) => {
+	const x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453;
+	return x - Math.floor(x);
+};
