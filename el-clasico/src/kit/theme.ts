@@ -12,11 +12,16 @@ face('Inter', 'Inter-800.ttf', '800');
 face('PlexMono', 'PlexMono-400.ttf', '400');
 face('PlexMono', 'PlexMono-600.ttf', '600');
 face('Cairo', 'Cairo-700.ttf', '700');
+face('Orbitron', 'Orbitron-700.ttf', '700');
+face('Orbitron', 'Orbitron-900.ttf', '900');
+face('Michroma', 'Michroma-400.ttf', '400');
 
 export const display = 'Anton';
 export const mono = 'PlexMono';
 export const inter = 'Inter';
 export const arabic = 'Cairo';
+export const orbitron = 'Orbitron';
+export const michroma = 'Michroma';
 
 export const C = {
 	bg: '#030304',
