@@ -142,7 +142,7 @@ const HUD: React.FC = () => {
 	const sec = Math.floor(f / 60);
 	const fr = f % 60;
 	const tc = `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}:${String(fr).padStart(2, '0')}`;
-	const ticker = '  FC BARCELONA  ·  REAL MADRID  ·  LALIGA MATCHDAY 10  ·  SUN 25.10.2026  ·  21:00 CET  ·  SPOTIFY CAMP NOU  ·  BARCELONA  ·';
+	const ticker = '  FC BARCELONA  ·  REAL MADRID  ·  LALIGA MATCHDAY 10  ·  SUN 25.10.2026  ·  23:00 KSA  ·  SPOTIFY CAMP NOU  ·  BARCELONA  ·';
 	const fadeEnd = 1 - tween(f, 1830, 80, 0, 1, IN_OUT);
 	return (
 		<AbsoluteFill style={{opacity: on * fadeEnd, pointerEvents: 'none'}}>
@@ -345,12 +345,14 @@ const VOCaption: React.FC = () => {
 	const f = useCurrentFrame();
 	return (
 		<>
-			{VO.filter((v) => v.cap).map((v, i) => {
+			{VO.filter((v) => v.cap).map((v, i, caps) => {
 				const a = s(v.at);
-				const end = a + s(v.to - v.from) + 24;
-				if (f < a || f > end + 20) return null;
-				const p = tween(f, a, 12);
-				const out = tween(f, end, 18, 0, 1, IN_OUT);
+				// a caption is fully gone before the next one starts — never two lines on screen at once
+				const next = i + 1 < caps.length ? s(caps[i + 1].at) : Infinity;
+				const end = Math.min(a + s(v.to - v.from) + 24, next - 10);
+				if (f < a || f > end + 10) return null;
+				const p = tween(f, a, 10);
+				const out = tween(f, end, 9, 0, 1, IN_OUT);
 				return (
 					<div key={i} style={{position: 'absolute', left: 60, right: 60, top: 1560, textAlign: 'center', opacity: p * (1 - out), transform: `translateY(${(1 - p) * 20}px)`}}>
 						<span style={{fontFamily: mono, fontSize: 58, color: C.ink, letterSpacing: 58 * 0.06, whiteSpace: 'pre'}}>{v.text}</span>
@@ -575,7 +577,7 @@ const H: React.FC = () => {
 			</div>
 			<div style={{position: 'absolute', top: 1170, width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 18, alignItems: 'center'}}>
 				{f >= 30 ? <Scramble text="25 OCTOBER 2026" at={30} dur={20} size={58} font={display} color={C.ink} /> : null}
-				{f >= 46 ? <Scramble text="SPOTIFY CAMP NOU · 21:00 CET" at={46} dur={20} size={26} /> : null}
+				{f >= 46 ? <Scramble text="SPOTIFY CAMP NOU · 23:00 KSA" at={46} dur={20} size={26} /> : null}
 				{f >= 66 ? <Scramble text="TWO GIANTS. ONE BATTLE." at={66} dur={20} size={30} color={C.red} /> : null}
 			</div>
 			<AbsoluteFill style={{background: '#fff', opacity: flash}} />

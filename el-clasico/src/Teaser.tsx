@@ -234,7 +234,7 @@ const DateLock: React.FC = () => {
 				<Reel digit={digits[3]} lockAt={locks[3]} f={f} />
 			</div>
 			<div style={{position: 'absolute', top: 1060, width: '100%', textAlign: 'center', opacity: tween(f, 925, 16)}}>
-				<Big size={92}>SUNDAY · 21:00 CET</Big>
+				<Big size={64} style={{direction: 'rtl', fontFamily: 'Cairo', fontWeight: 700, lineHeight: 1.4, whiteSpace: 'nowrap'}}>الأحد · 11 م بتوقيت السعودية</Big>
 			</div>
 		</AbsoluteFill>
 	);
@@ -264,7 +264,7 @@ const Title: React.FC = () => {
 						<Img src={staticFile('clasico/crest/rma.svg')} style={{width: 120, height: 120, objectFit: 'contain'}} />
 					</div>
 					<div style={{position: 'absolute', top: 1300, width: '100%', textAlign: 'center', opacity: tween(f, chord + 26, 16)}}>
-						<Mono size={26} color={C.ink}>SUN 25.10.2026 · 21:00 CET</Mono>
+						<Mono size={26} color={C.ink}>SUN 25.10.2026 · 23:00 KSA</Mono>
 					</div>
 					<div style={{position: 'absolute', top: 1350, width: '100%', textAlign: 'center', opacity: tween(f, chord + 36, 16)}}>
 						<Mono size={22}>SPOTIFY CAMP NOU · BARCELONA</Mono>
