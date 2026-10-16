@@ -143,19 +143,21 @@ const Pitch: React.FC<{fill: number; cross: number; y?: number}> = ({fill, cross
 const S1: React.FC = () => {
 	const f = useCurrentFrame();
 	const items: Notif[] = [
-		{at: 40, glyph: '7', title: 'الدوري الإنجليزي الممتاز', body: 'الجولة 7 · من 17 إلى 19 أكتوبر'},
-		{at: 100, glyph: '10', title: '10 مباريات', body: 'عشرون نادي في الملعب'},
-		{at: 160, glyph: '3', title: '3 ليالي', body: 'السبت · الأحد · الاثنين'},
+		{at: 140, glyph: '7', title: 'الدوري الإنجليزي الممتاز', body: 'الجولة 7 · من 17 إلى 19 أكتوبر'},
+		{at: 185, glyph: '10', title: '10 مباريات', body: 'عشرون نادي في الملعب'},
+		{at: 230, glyph: '3', title: '3 ليالي', body: 'السبت · الأحد · الاثنين'},
 	];
-	const stackOut = tween(f, 228, 26, 0, 1, IN_OUT);
+	const stackIn = tween(f, 130, 14);
+	const stackOut = tween(f, 300, 26, 0, 1, IN_OUT);
 	const tilt = tween(f, 330, 50, 0, 1, IN_OUT);
 	return (
 		<AbsoluteFill>
-			<Hairlines draw={tween(f, 0, 70, 0, 1, IN_OUT)} tilt={tilt} nodes={1 - tilt} />
-			<div style={{opacity: 1 - stackOut, transform: `translateY(${-stackOut * 80}px)`}}>
+			<Hairlines draw={tween(f, -40, 70, 0, 1, IN_OUT)} tilt={tilt} nodes={1 - tilt} />
+			{/* the hook is fully on screen from frame 0 (cover frame + first second) */}
+			<Words text="جولة ممكن تقلب الترتيب" at={-40} y={620} size={150} accent={['الترتيب']} out={118} />
+			<div style={{opacity: stackIn * (1 - stackOut), transform: `translateY(${-stackOut * 80}px)`}}>
 				<NotifStack items={items} x={540} y={620} width={900} />
 			</div>
-			<Words text="جولة ممكن تقلب الترتيب" at={250} y={620} size={150} accent={['الترتيب']} out={322} />
 		</AbsoluteFill>
 	);
 };
@@ -518,9 +520,9 @@ export const GW7: React.FC = () => {
 			</Sequence>
 
 			<Audio src={staticFile('gw7/music.mp3')} volume={music} />
-			<Sfx at={40} src="gw7/sfx/ding.wav" volume={0.3} />
-			<Sfx at={100} src="gw7/sfx/pop.wav" volume={0.28} />
-			<Sfx at={160} src="gw7/sfx/pop.wav" volume={0.22} />
+			<Sfx at={140} src="gw7/sfx/ding.wav" volume={0.3} />
+			<Sfx at={185} src="gw7/sfx/pop.wav" volume={0.28} />
+			<Sfx at={230} src="gw7/sfx/pop.wav" volume={0.22} />
 			<Sfx at={270} src="gw7/sfx/riser.wav" volume={0.25} />
 			<Sfx at={760} src="gw7/sfx/tick.wav" volume={0.3} />
 			<Sfx at={958} src="gw7/sfx/swipe.wav" volume={0.3} />

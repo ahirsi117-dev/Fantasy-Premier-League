@@ -6,7 +6,7 @@ import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {C, EXPO, IN_OUT, WHIP, display, mono, orbitron, pop, tween} from './kit/theme';
 
-export const TEASER_TOTAL = 1320;
+export const TEASER_TOTAL = 1180; // title holds ~2.5 s so the reel loops
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 
 // kick-off in local time (checked with the IANA tz database; Spain leaves summer time that morning)
@@ -77,6 +77,9 @@ const Hook: React.FC = () => {
 						<div key={i} style={{height: i === 2 ? 285 : 180}} />
 					);
 				})}
+			</div>
+			<div style={{position: 'absolute', top: 1380, width: '100%', textAlign: 'center', direction: 'rtl', opacity: tween(f, 62, 14)}}>
+				<span style={{fontFamily: 'Cairo', fontWeight: 700, fontSize: 64, color: C.ink}}>العالم بيوقف.</span>
 			</div>
 		</AbsoluteFill>
 	);
@@ -290,7 +293,7 @@ const TICKS: number[] = (() => {
 })();
 
 const musicVol = (f: number) => {
-	const base = interpolate(f, [0, 30, 1260, 1320], [0.0, 0.6, 0.6, 0], clamp);
+	const base = interpolate(f, [0, 30, TEASER_TOTAL - 50, TEASER_TOTAL], [0.0, 0.6, 0.6, 0], clamp);
 	const silence = interpolate(f, [FREEZE - 2, FREEZE, SILENCE_END - 1, SILENCE_END], [1, 0, 0, 1], clamp); // the world stops
 	return base * silence;
 };

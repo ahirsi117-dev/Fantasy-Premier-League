@@ -353,7 +353,7 @@ const VOCaption: React.FC = () => {
 				const out = tween(f, end, 18, 0, 1, IN_OUT);
 				return (
 					<div key={i} style={{position: 'absolute', left: 60, right: 60, top: 1560, textAlign: 'center', opacity: p * (1 - out), transform: `translateY(${(1 - p) * 20}px)`}}>
-						<Scramble text={v.text} at={a} dur={12} size={58} />
+						<span style={{fontFamily: mono, fontSize: 58, color: C.ink, letterSpacing: 58 * 0.06, whiteSpace: 'pre'}}>{v.text}</span>
 					</div>
 				);
 			})}
@@ -376,7 +376,7 @@ const A: React.FC = () => {
 				<Big size={150}>EL CLÁSICO</Big>
 			</div>
 			<div style={{position: 'absolute', top: 470, width: '100%', textAlign: 'center'}}>
-				<Scramble text="FC BARCELONA × REAL MADRID · 25.10.2026" at={10} dur={40} size={24} color={C.muted} />
+				<Scramble text="FC BARCELONA × REAL MADRID · 25.10.2026" at={-60} dur={40} size={24} color={C.muted} />
 			</div>
 		</AbsoluteFill>
 	);
