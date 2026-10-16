@@ -1,7 +1,7 @@
 // EL CLÁSICO — THE WORLD STOPS · 32 s · 9:16 · 1080×1920 @ 60 fps
 // Script: the user's 7-part trailer. Motion language from "Look 00" (whatships.com/videos/look-00):
 // HUD brackets, mono labels that decode, tag cards with barcodes, red index numbers,
-// condensed heavy type, tracking boxes, grain. Music: "Achilles" (Kevin MacLeod, CC BY 4.0) — its kick at 0:27 lands on the title.
+// condensed heavy type, tracking boxes, grain. Music: "Achilles" (Kevin MacLeod, CC BY 4.0) — opens on its 0:27 kick and re-cuts to it for the title.
 // VO: the user's file, cut into its 13 phrases, running from the first second.
 import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
@@ -584,14 +584,13 @@ const H: React.FC = () => {
 };
 
 // ---------------------------------------------------------------- audio
-// music: "Achilles" from 0:02, so its kick (0:27) lands on the title at 25 s; sits under the voice, opens up after
-const MUSIC_START = 2;
-const musicVol = (f: number) => {
-	const fadeIn = interpolate(f, [0, 20], [0, 1], clamp);
-	const bed = interpolate(f, [s(24.9), s(25.05)], [0.42, 0.75], clamp);
-	const end = interpolate(f, [s(30.6), s(32)], [1, 0], clamp);
-	return fadeIn * bed * end;
-};
+// music: "Achilles" from its big kick (0:27) so the video opens at full energy;
+// re-cut back to the same kick just before the title so "EL CLÁSICO" lands on it.
+const OPEN_FROM = 26.6; // kick lands at ~0.4 s
+const TITLE_CUT = 24.95; // second pass starts here…
+const TITLE_FROM = 26.9; // …so the kick lands at ~25.05 s
+const openVol = (f: number) => interpolate(f, [0, 6, s(24.55), s(TITLE_CUT)], [0, 0.5, 0.5, 0], clamp);
+const titleVol = (f: number) => interpolate(f, [0, 3, s(30.6) - s(TITLE_CUT), s(32) - s(TITLE_CUT)], [0, 0.8, 0.8, 0], clamp);
 
 // ---------------------------------------------------------------- timeline
 const CUTS: [number, number, React.FC][] = [
@@ -623,13 +622,17 @@ export const Clasico: React.FC = () => {
 			<Grain />
 			<HUD />
 
-			<Audio src={staticFile('clasico/music.mp3')} startFrom={s(MUSIC_START)} volume={musicVol} />
+			<Sequence from={0} durationInFrames={s(TITLE_CUT)} layout="none">
+				<Audio src={staticFile('clasico/music.mp3')} startFrom={s(OPEN_FROM)} volume={openVol} />
+			</Sequence>
+			<Sequence from={s(TITLE_CUT)} layout="none">
+				<Audio src={staticFile('clasico/music.mp3')} startFrom={s(TITLE_FROM)} volume={titleVol} />
+			</Sequence>
 			{VO.map((v, i) => (
 				<Sequence key={i} from={s(v.at)} durationInFrames={s(v.to - v.from) + 2} layout="none">
 					<Audio src={staticFile('clasico/vo/vo.wav')} startFrom={s(v.from)} endAt={s(v.to)} volume={1} />
 				</Sequence>
 			))}
-			<Sfx at={0} src="heartbeat.wav" v={0.5} />
 			<Sfx at={s(5.3)} src="whoosh.wav" v={0.3} />
 			<Sfx at={s(10.3)} src="boom.wav" v={0.4} />
 			<Sfx at={s(15.2)} src="hit.wav" v={0.4} />
