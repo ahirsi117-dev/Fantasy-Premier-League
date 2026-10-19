@@ -78,9 +78,6 @@ const Hook: React.FC = () => {
 					);
 				})}
 			</div>
-			<div style={{position: 'absolute', top: 1380, width: '100%', textAlign: 'center', direction: 'rtl', opacity: tween(f, 62, 14)}}>
-				<span style={{fontFamily: 'Cairo', fontWeight: 700, fontSize: 64, color: C.ink}}>العالم بيوقف.</span>
-			</div>
 		</AbsoluteFill>
 	);
 };
@@ -234,7 +231,7 @@ const DateLock: React.FC = () => {
 				<Reel digit={digits[3]} lockAt={locks[3]} f={f} />
 			</div>
 			<div style={{position: 'absolute', top: 1060, width: '100%', textAlign: 'center', opacity: tween(f, 925, 16)}}>
-				<Big size={64} style={{direction: 'rtl', fontFamily: 'Cairo', fontWeight: 700, lineHeight: 1.4, whiteSpace: 'nowrap'}}>الأحد · 11 م بتوقيت السعودية</Big>
+				<Big size={72} style={{whiteSpace: 'nowrap', letterSpacing: 2}}>SUNDAY · 23:00 KSA</Big>
 			</div>
 		</AbsoluteFill>
 	);
