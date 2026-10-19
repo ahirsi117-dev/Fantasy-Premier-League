@@ -1,10 +1,14 @@
-// EL CLÁSICO teaser — "THE WORLD STOPS" · 22 s · 9:16 · no voiceover (built for muted reels)
+// EL CLÁSICO teaser — "THE WORLD STOPS" · 20 s · 9:16 · English trailer VO (Gemini TTS, scripts/teaser-vo.mjs → src/teaserVo.json)
 // Idea: clocks around the world all land on the same second — kick-off (Sun 25 Oct 2026, 21:00 CET =
 // 20:00 UTC). Ticking drives the cut, then everything stops: silence, then the two crests collide.
 // Sound: generated cinematic bed (synth-audio, D minor, final chord at 17.2 s) + synthesized clock ticks.
 import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {C, EXPO, IN_OUT, WHIP, display, mono, orbitron, pop, tween} from './kit/theme';
+import VO_DATA from './teaserVo.json';
+
+type VoLine = {file: string; at: number; len: number; rate: number; text: string};
+const VO: VoLine[] = (VO_DATA as {lines: VoLine[]}).lines;
 
 export const TEASER_TOTAL = 1180; // title holds ~2.5 s so the reel loops
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
@@ -289,8 +293,15 @@ const TICKS: number[] = (() => {
 	return t;
 })();
 
+// music ducks under each VO line (0.6 → 0.3), easing in/out over ~6 frames
+const duck = (f: number) =>
+	VO.reduce((d, v) => {
+		const a = v.at * 60, b = (v.at + v.len) * 60;
+		return Math.min(d, interpolate(f, [a - 6, a, b, b + 10], [1, 0.5, 0.5, 1], clamp));
+	}, 1);
+
 const musicVol = (f: number) => {
-	const base = interpolate(f, [0, 30, TEASER_TOTAL - 50, TEASER_TOTAL], [0.0, 0.6, 0.6, 0], clamp);
+	const base = interpolate(f, [0, 30, TEASER_TOTAL - 50, TEASER_TOTAL], [0.0, 0.6, 0.6, 0], clamp) * duck(f);
 	const silence = interpolate(f, [FREEZE - 2, FREEZE, SILENCE_END - 1, SILENCE_END], [1, 0, 0, 1], clamp); // the world stops
 	return base * silence;
 };
@@ -325,6 +336,11 @@ export const Teaser: React.FC = () => {
 			{f >= FREEZE && f < 600 ? <AbsoluteFill style={{background: 'rgba(0,0,0,0.25)'}} /> : null}
 
 			<Audio src={staticFile('teaser/music.wav')} volume={musicVol} />
+			{VO.map((v, i) => (
+				<Sequence key={`vo${i}`} from={Math.round(v.at * 60)} layout="none">
+					<Audio src={staticFile(v.file)} playbackRate={v.rate} volume={1} />
+				</Sequence>
+			))}
 			{TICKS.map((t, i) => (
 				<Sfx key={i} at={t} src="teaser/tick.wav" v={0.25} />
 			))}
